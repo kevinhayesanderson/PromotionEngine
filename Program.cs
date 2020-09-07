@@ -36,7 +36,43 @@ namespace PromotionEngine
 
         private static int ApplyPromotion(Dictionary<string, int> order)
         {
-            throw new NotImplementedException();
+            int totalOrderValue = default;
+
+            foreach (var (SKUs, fixedPrice) in ActivePromotions)
+            {
+                bool apply = false;
+                SKUs.ForEach(sku =>
+                {
+                    apply = order.ContainsKey(sku.SKU) && order.TryGetValue(sku.SKU, out int n) && (n >= sku.n);
+                });
+
+                if (apply)
+                {
+                    int no = 1;
+                    SKUs.ForEach(sku =>
+                    {
+                        order.TryGetValue(sku.SKU, out int n);
+                        if (SKUs.Count > 1)
+                        {
+                            // TODO
+                        }
+                        else
+                        {
+                            no = order[sku.SKU] / sku.n;
+                            order[sku.SKU] -= no * sku.n;
+                        }
+
+                    });
+                    totalOrderValue += no * fixedPrice;
+                }
+            }
+
+            foreach (var orderItem in order)
+            {
+                totalOrderValue += UnitPrices[orderItem.Key] * orderItem.Value;
+            }
+
+            return totalOrderValue;
         }
 
         public static void SetPromotion((List<(string SKU, int n)> SKUs, int fixedPrice) promotion) => ActivePromotions.Add((promotion.SKUs, promotion.fixedPrice));
