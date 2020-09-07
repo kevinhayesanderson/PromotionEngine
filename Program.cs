@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PromotionEngine
 {
-    internal class Program
+    public class Program
     {
         private static Dictionary<string, int> UnitPrices = new Dictionary<string, int>()
         {
