@@ -34,7 +34,7 @@ namespace PromotionEngine
             Console.ReadKey();
         }
 
-        private static int ApplyPromotion(Dictionary<string, int> order)
+        public static int ApplyPromotion(Dictionary<string, int> order)
         {
             int totalOrderValue = default;
 
@@ -54,14 +54,15 @@ namespace PromotionEngine
                         order.TryGetValue(sku.SKU, out int n);
                         if (SKUs.Count > 1)
                         {
-                            // TODO
+                            int times = order[sku.SKU] / sku.n;
+                            no = no == 0 ? times : (times < no) ? times : no;
+                            order[sku.SKU] -= times * sku.n;
                         }
                         else
                         {
                             no = order[sku.SKU] / sku.n;
                             order[sku.SKU] -= no * sku.n;
                         }
-
                     });
                     totalOrderValue += no * fixedPrice;
                 }
